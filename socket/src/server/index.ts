@@ -4,7 +4,7 @@ import path from "path";
 import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
 import moment from "moment";
-import { USERS, User, getUser, joinUser, removeUser } from "./utils";
+import { HISTORY, USERS, User, getUser, joinUser, removeUser } from "./utils";
 
 const { PORT = 3001 } = process.env;
 
@@ -38,6 +38,7 @@ export type ServerToClientEvents = {
   // chat
   msg_broadcast: (data: Msg) => void;
   room_info: (data: User[]) => void;
+  chat_his: (data: Msg[]) => void;
 };
 
 export type ClientToServerEvents = {
@@ -81,6 +82,13 @@ io.on("connection", (socket) => {
     const user = getUser(socket.id);
     if (user) {
       io.to([user.room]).emit("msg_broadcast", { ...data, user: user.name });
+
+      // add to history
+      if (user.room in HISTORY) {
+        HISTORY[user.room].push({ ...data, user: user.name });
+      } else {
+        HISTORY[user.room] = [{ ...data, user: user.name }];
+      }
     }
   });
 
@@ -102,14 +110,18 @@ io.on("connection", (socket) => {
       id: socket.id,
     };
     joinUser(user);
+    // broadcast
     io.to(user.room).emit("msg_broadcast", {
       user: "bot",
       roomId: user.room,
       time: moment().toString(),
       content: `${data.userName} joined room!`,
     });
+
     io.to(user.room).emit("room_info", USERS);
     console.log("users: ", USERS);
+
+    io.to(user.room).emit("chat_his", HISTORY[user.room] || []);
   });
 
   socket.on("disconnect", () => {

@@ -6,6 +6,8 @@ export type User = {
   room: string;
 };
 
+export const HISTORY: Record<string, Msg[]> = {};
+
 export const USERS: User[] = [];
 
 export const joinUser = (u: User) => {

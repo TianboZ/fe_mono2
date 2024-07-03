@@ -22,6 +22,10 @@ const Chat = ({ roomId, username }) => {
     socket.on("room_info", (users) => {
       setUsers([...(users || [])]);
     });
+
+    socket.on("chat_his", (data) => {
+      setChats(data);
+    });
   }, []);
 
   const handleSendMsg = () => {
