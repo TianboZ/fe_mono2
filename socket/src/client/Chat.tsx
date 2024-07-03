@@ -1,30 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { socket } from "./App";
 import { Msg } from "../server";
-import ScrollToBottom from "react-scroll-to-bottom";
+import moment from "moment";
+import { User } from "../server/utils";
 
 const Chat = ({ roomId, username }) => {
   const [chats, setChats] = useState<Msg[]>([]);
   const [msg, setMsg] = useState("");
-  const [roomInfo, setRoomInfo] = useState();
+  const chatRef = useRef<HTMLElement>();
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    socket.on("msg_receive", (data) => {
+    socket.on("msg_broadcast", (data) => {
       console.log("data:", data);
       setChats((prev) => [...prev, data]);
+      setTimeout(() => {
+        chatRef.current.scrollTop = chatRef.current?.scrollHeight;
+      }, 10);
     });
-    socket.on("room_info", (data) => {
-      console.log("room_info", data);
-      setRoomInfo(data);
+
+    socket.on("room_info", (users) => {
+      setUsers([...(users || [])]);
     });
   }, []);
 
   const handleSendMsg = () => {
     socket.emit("msg_send", {
-      roomId,
-      data: msg,
-      user: username,
-      time: Date.now(),
+      content: msg,
+      time: moment(),
     });
     setMsg("");
   };
@@ -35,46 +38,45 @@ const Chat = ({ roomId, username }) => {
       <div>current user: {username}</div>
       <div>users in room: </div>
       <div>
-        {roomInfo?.users.map((d, i) => (
-          <div>{d}</div>
+        {users.map((d, i) => (
+          <div>{d.name}</div>
         ))}
       </div>
       <div
         style={{
           backgroundColor: "white",
           border: "1px solid red",
+          height: "400px",
+          width: "500px",
+          overflow: "auto",
         }}
+        ref={chatRef}
       >
-        <ScrollToBottom className="chat-container">
-          {chats.map((data, i) => {
-            const isCurrentUser = data.user === username;
-            return (
+        {chats.map((data, i) => {
+          const isCurrentUser = data.user === username;
+          return (
+            <div
+              key={i}
+              className={` mb-4 flex ${
+                !isCurrentUser ? "justify-start" : "justify-end"
+              } `}
+            >
               <div
-                key={i}
-                className={` mb-4 flex ${
-                  !isCurrentUser ? "justify-start" : "justify-end"
-                } `}
+                className={`  text-black ${
+                  isCurrentUser
+                    ? "bg-yellow-300   text-right"
+                    : " bg-blue-600 text-left"
+                }`}
               >
-                <div
-                  className={`  text-black ${
-                    isCurrentUser
-                      ? "bg-yellow-300   text-right"
-                      : " bg-blue-600 text-left"
-                  }`}
-                >
-                  {data.data}
-                  <div className=" rounded   bg-cyan-300 m-1">
-                    <div className=" text-sm">from: {data.user}</div>
-                    <div className=" text-sm">{data.time}</div>
-                  </div>
+                {data.content}
+                <div className=" rounded   bg-cyan-300 m-1">
+                  <div className=" text-sm">from: {data.user}</div>
+                  <div className=" text-sm">{data.time}</div>
                 </div>
               </div>
-              // <pre className=" text-yellow-600" key={i}>
-              //   {JSON.stringify(data, null, 2)}
-              // </pre>
-            );
-          })}
-        </ScrollToBottom>
+            </div>
+          );
+        })}
       </div>
       <div>
         <input

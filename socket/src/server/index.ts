@@ -3,6 +3,8 @@ import router from "./router";
 import path from "path";
 import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
+import moment from "moment";
+import { USERS, User, getUser, joinUser, removeUser } from "./utils";
 
 const { PORT = 3001 } = process.env;
 
@@ -27,42 +29,38 @@ const httpServer = createServer(app);
 
 // event naming format [domain:action]
 export type Msg = {
-  data: string;
-  roomId: string;
+  content: string;
   time: string;
   user: string;
+  roomId: string;
 };
 export type ServerToClientEvents = {
-  broadcast: (arg: string) => void;
-  basicEmit: (a: number, b: string) => void;
-  emtiWithAck: (a: string, cb: (err: any, arg: any) => void) => void;
-  emitNoArg: () => void;
   // chat
-  msg_receive: (data: Msg) => void;
-  room_info: (data: any) => void;
+  msg_broadcast: (data: Msg) => void;
+  room_info: (data: User[]) => void;
 };
 
 export type ClientToServerEvents = {
-  hello: (arg: string) => void;
   // chat
   msg_send: (arg: Msg) => void;
-  room_join: (arg: string, cb: any) => void;
-};
-
-type InterServerEvents = {
-  ping: () => void;
+  room_join: (
+    data: {
+      roomId: string;
+      userName: string;
+    },
+    cb: any
+  ) => void;
 };
 
 // Initialize Socket.IO with the HTTP server
-const io = new SocketIOServer<
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents
->(httpServer, {
-  cors: {
-    origin: "*", // Adjust the CORS settings as needed
-  },
-});
+const io = new SocketIOServer<ClientToServerEvents, ServerToClientEvents>(
+  httpServer,
+  {
+    cors: {
+      origin: "*", // Adjust the CORS settings as needed
+    },
+  }
+);
 
 io.on("connection", (socket) => {
   console.log(
@@ -73,31 +71,17 @@ io.on("connection", (socket) => {
   );
 
   // broadcase
-  io.emit("broadcast", "boradcase message from server");
 
   // emit events
-  socket.emit("basicEmit", Math.random() * 100, "simple emit message");
-
-  socket.emit("emtiWithAck", "emtiWithAck event", (err, resp) => {
-    console.log(err);
-    console.log(resp);
-  });
-
-  socket.emit("emitNoArg");
 
   // receive events
-  socket.on("hello", (arg1) => {
-    console.log("hello event");
-    console.log(arg1);
-    // can broadcast here by using server instance, io
-    // io.emit('broadcast',  'boradcase message from socket instance');
-  });
-
   socket.on("msg_send", (data) => {
     console.log(data);
-    // io.emit('msg_receive', data);
-
-    io.to([data.roomId]).emit("msg_receive", data);
+    // io.emit('msg_broadcast', data);
+    const user = getUser(socket.id);
+    if (user) {
+      io.to([user.room]).emit("msg_broadcast", { ...data, user: user.name });
+    }
   });
 
   socket.on("room_join", (data, cb) => {
@@ -109,16 +93,39 @@ io.on("connection", (socket) => {
       "rooms",
       socket.rooms
     );
-    socket.join(data);
-    console.log("room size", io.sockets.adapter.rooms.get(data));
+
+    socket.join(data.roomId);
     cb();
-    io.emit("room_info", {
-      users: Array.from(io.sockets.adapter.rooms.get(data) || []),
+    const user: User = {
+      name: data.userName,
+      room: data.roomId,
+      id: socket.id,
+    };
+    joinUser(user);
+    io.to(user.room).emit("msg_broadcast", {
+      user: "bot",
+      roomId: user.room,
+      time: moment().toString(),
+      content: `${data.userName} joined room!`,
     });
+    io.to(user.room).emit("room_info", USERS);
+    console.log("users: ", USERS);
   });
 
   socket.on("disconnect", () => {
     console.log("A user disconnected", socket.id);
+    const user = getUser(socket.id);
+    if (user) {
+      removeUser(user.id);
+      io.to([user.room]).emit("msg_broadcast", {
+        content: `${user.name} has left room`,
+        time: moment().toString(),
+        roomId: user.room,
+        user: "bot",
+      });
+
+      io.to(user.room).emit("room_info", USERS);
+    }
   });
 });
 

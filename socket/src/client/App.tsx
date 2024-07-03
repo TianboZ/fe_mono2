@@ -28,7 +28,7 @@ function App(): JSX.Element {
     if (!roomId || !username) {
       return;
     }
-    socket.emit("room_join", roomId, () => {
+    socket.emit("room_join", { roomId, userName: username }, () => {
       setIsLoggedIn(true);
     });
   };
@@ -39,23 +39,27 @@ function App(): JSX.Element {
         <header className={styles["App-header"]}>
           {!isLoggedIn ? (
             <div>
-              <input
-                className=" text-black"
-                type="text"
-                placeholder="username"
-                value={username}
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                }}
-              />
-              <input
-                className=" text-black"
-                placeholder="room id"
-                value={roomId}
-                onChange={(e) => {
-                  setRoomId(e.target.value);
-                }}
-              />
+              <div>
+                <input
+                  className=" text-black"
+                  type="text"
+                  placeholder="username"
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                  }}
+                />
+              </div>
+              <div>
+                <input
+                  className=" text-black"
+                  placeholder="room id"
+                  value={roomId}
+                  onChange={(e) => {
+                    setRoomId(e.target.value);
+                  }}
+                />
+              </div>
               <button onClick={handleJoinRoom}>join room</button>
             </div>
           ) : (
