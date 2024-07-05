@@ -2,7 +2,7 @@ import express from "express";
 import router from "./router";
 import path from "path";
 import { createServer } from "http";
-import { Server as SocketIOServer } from "socket.io";
+import { Server } from "socket.io";
 import moment from "moment";
 import { HISTORY, USERS, User, getUser, joinUser, removeUser } from "./utils";
 
@@ -54,14 +54,11 @@ export type ClientToServerEvents = {
 };
 
 // Initialize Socket.IO with the HTTP server
-const io = new SocketIOServer<ClientToServerEvents, ServerToClientEvents>(
-  httpServer,
-  {
-    cors: {
-      origin: "*", // Adjust the CORS settings as needed
-    },
-  }
-);
+const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {
+  cors: {
+    origin: "*", // Adjust the CORS settings as needed
+  },
+});
 
 io.on("connection", (socket) => {
   console.log(
