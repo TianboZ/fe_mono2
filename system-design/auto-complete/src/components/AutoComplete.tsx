@@ -38,33 +38,35 @@ const AutoComplete: FC<AutoCompleteProps> = ({
   autoFocus = true,
   // event
   onInputChange,
-  customStyles,
+  onChange,
   // styles
+  customStyles,
 }) => {
   const [focused, setFocused] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(-1);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSelectOption = (option: any) => {
     console.log(option);
     onInputChange(option.name);
-    inputRef.current.blur();
+    onChange(option);
+    inputRef.current?.blur();
   };
 
   useEffect(() => {
-    inputRef.current.focus();
+    if (autoFocus) {
+      inputRef.current?.focus();
+    }
   }, []);
 
   const handleKeyNav = (e: React.KeyboardEvent<HTMLInputElement>) => {
     console.log(e.key, selectedIdx);
     if (selectedIdx < options.length) {
       if (e.key === "ArrowDown") {
-        setSelectedIdx((prev) => {
-          return prev + 1;
-        });
+        setSelectedIdx((prev) => (prev + 1) % options.length);
       }
       if (e.key === "ArrowUp") {
-        setSelectedIdx((prev) => (prev - 1) % options.length);
+        setSelectedIdx((prev) => (prev - 1 + options.length) % options.length);
       }
       if (e.key === "Enter") {
         const option = options[selectedIdx];
@@ -114,6 +116,9 @@ const AutoComplete: FC<AutoCompleteProps> = ({
               key={i}
               onMouseDown={() => {
                 handleSelectOption(opt);
+              }}
+              onMouseEnter={() => {
+                setSelectedIdx(i);
               }}
               style={{
                 backgroundColor: i === selectedIdx ? "red" : undefined,

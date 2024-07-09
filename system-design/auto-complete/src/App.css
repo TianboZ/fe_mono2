@@ -11,7 +11,7 @@
 }
 
 .option-item:hover {
-  /* background-color: red; */
+  background-color: red;
   cursor: pointer;
 }
 

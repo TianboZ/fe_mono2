@@ -31,6 +31,7 @@ const useSearchData = () => {
 
 function App() {
   const [inputValue, setInputValue] = useState("");
+  const [value, setValue] = useState(); // data type
   const { data, isLoading, error, fetchData } = useSearchData();
 
   useEffect(() => {
@@ -44,6 +45,9 @@ function App() {
         placeholder="search...."
         onInputChange={(input) => {
           setInputValue(input);
+        }}
+        onChange={(v) => {
+          setValue(v);
         }}
         options={data}
         isLoading={isLoading}
