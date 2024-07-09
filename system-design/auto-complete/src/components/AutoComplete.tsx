@@ -1,12 +1,24 @@
-import { CSSProperties, FC, ReactNode, useState } from "react";
+import {
+  CSSProperties,
+  FC,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 type AutoCompleteProps = {
-  // data
-  options: any;
+  // props
+  inputValue: string;
+  value: string;
+  options: any[];
   placeholder: string;
+  autoFocus: boolean;
+  isLoading: boolean;
   // event
   fetchSuggestion: () => void;
-  onChange: () => void;
+  onInputChange: () => void;
+  onChange: () => void; // called when autocomplete value changes
   onBlur: () => void;
   onFocus: () => void;
   onSearch: () => void;
@@ -16,25 +28,102 @@ type AutoCompleteProps = {
   className: string;
   customStyles: CSSProperties;
 };
-const AutoComplete: FC<AutoCompleteProps> = ({
-  data,
-  placeholder,
-  fetchSuggestion,
-  customStyles,
-}) => {
-  const [val, setVal] = useState("");
 
-  const handleInput = (e) => {
-    setVal(e.target.value);
+const AutoComplete: FC<AutoCompleteProps> = ({
+  // props
+  inputValue,
+  options,
+  placeholder,
+  isLoading,
+  autoFocus = true,
+  // event
+  onInputChange,
+  customStyles,
+  // styles
+}) => {
+  const [focused, setFocused] = useState(false);
+  const [selectedIdx, setSelectedIdx] = useState(-1);
+  const inputRef = useRef(null);
+
+  const handleSelectOption = (option: any) => {
+    console.log(option);
+    onInputChange(option.name);
+    inputRef.current.blur();
   };
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+  const handleKeyNav = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log(e.key, selectedIdx);
+    if (selectedIdx < options.length) {
+      if (e.key === "ArrowDown") {
+        setSelectedIdx((prev) => {
+          return prev + 1;
+        });
+      }
+      if (e.key === "ArrowUp") {
+        setSelectedIdx((prev) => (prev - 1) % options.length);
+      }
+      if (e.key === "Enter") {
+        const option = options[selectedIdx];
+        if (option) {
+          handleSelectOption(option);
+          setSelectedIdx(-1);
+        }
+      }
+      console.log(selectedIdx);
+    }
+  };
+
   return (
-    <div>
+    <div style={customStyles}>
       <input
-        value={val}
+        ref={inputRef}
+        onFocus={() => {
+          setFocused(true);
+        }}
+        onBlur={() => {
+          setFocused(false);
+          setSelectedIdx(-1);
+        }}
+        value={inputValue}
         placeholder={placeholder}
-        onChange={handleInput}
+        onChange={(e) => {
+          onInputChange(e.target.value);
+        }}
+        onKeyDown={(e) => {
+          handleKeyNav(e);
+        }}
         style={customStyles}
+        type="text"
       />
+      {focused && options.length > 0 && (
+        <div
+          style={{
+            height: 300,
+            backgroundColor: "blue",
+            overflow: "auto",
+          }}
+        >
+          {isLoading && "loading! "}
+          {options.map((opt, i) => (
+            <div
+              className="option-item"
+              key={i}
+              onMouseDown={() => {
+                handleSelectOption(opt);
+              }}
+              style={{
+                backgroundColor: i === selectedIdx ? "red" : undefined,
+              }}
+            >
+              {opt.name}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
