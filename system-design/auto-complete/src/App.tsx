@@ -8,7 +8,7 @@ const useSearchData = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchData = async (query) => {
+  const fetchData = async (query: string) => {
     if (!query) {
       return;
     }
@@ -21,6 +21,7 @@ const useSearchData = () => {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
+      setError(error);
     }
   };
 
