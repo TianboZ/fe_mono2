@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import AutoComplete from "./AutoComlete";
 import debounce from "lodash/debounce";
@@ -16,18 +16,24 @@ const wait = () => {
 
 // with retry, with cache
 const request = async (...arg) => {
-  const key = JSON.stringify(...arg);
+  const key = JSON.stringify(arg[0]);
   const entry = CACHE[key];
   let cnt = RETRY_COUNT;
   console.log("CACHE", CACHE);
+  const controller = new AbortController();
 
   if (!entry || Date.now() > entry.expire) {
     // make a fresh call
     while (cnt > 0) {
       try {
-        let res = await fetch(...arg);
+        const timeout = setTimeout(() => {
+          controller.abort();
+        }, 10000);
+
+        let res = await fetch(arg[0], { signal: controller.signal });
         res = await res.json();
         // success
+        clearTimeout(timeout);
         CACHE[key] = { data: res, expire: Date.now() + 1000 * 10 };
         console.log(CACHE);
         return res;
@@ -53,9 +59,9 @@ const useSearchApi = () => {
     try {
       setIsLoading(true);
       let res = await request(
-        `https://dummyjson.com/recipes/search?q=${query}&delay=100`
+        `https://dummyjson.com/recipes/search?q=${query}&delay=2000`
       );
-      setData(res.recipes);
+      setData(res.recipes || []);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
