@@ -6,6 +6,14 @@ import debounce from "lodash/debounce";
 const CACHE: Record<string, { data: any; expire: number }> = {};
 const RETRY_COUNT = 3;
 
+const wait = () => {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, 1000);
+  });
+};
+
 // with retry, with cache
 const request = async (...arg) => {
   const key = JSON.stringify(...arg);
@@ -25,6 +33,7 @@ const request = async (...arg) => {
         return res;
       } catch (error) {
         console.log(error);
+        wait();
         cnt -= 1;
       }
     }
