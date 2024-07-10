@@ -89,7 +89,7 @@ const AutoComplete = ({
       >
         clear
       </button>
-      {focused && (options.length > 0 || isLoading) && (
+      {focused && options.length > 0 && (
         <div
           style={{ height: 200, backgroundColor: "blue", overflow: "scroll" }}
         >

@@ -3,6 +3,38 @@ import "./App.css";
 import AutoComplete from "./AutoComlete";
 import debounce from "lodash/debounce";
 
+const CACHE: Record<string, { data: any; expire: number }> = {};
+const RETRY_COUNT = 3;
+
+// with retry, with cache
+const request = async (...arg) => {
+  const key = JSON.stringify(...arg);
+  const entry = CACHE[key];
+  let cnt = RETRY_COUNT;
+  console.log("CACHE", CACHE);
+
+  if (!entry || Date.now() > entry.expire) {
+    // make a fresh call
+    while (cnt > 0) {
+      try {
+        let res = await fetch(...arg);
+        res = await res.json();
+        // success
+        CACHE[key] = { data: res, expire: Date.now() + 1000 * 10 };
+        console.log(CACHE);
+        return res;
+      } catch (error) {
+        console.log(error);
+        cnt -= 1;
+      }
+    }
+    // logging, e.g. Sentry
+    throw new Error("API fail");
+  } else {
+    return entry.data;
+  }
+};
+
 const useSearchApi = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -11,8 +43,9 @@ const useSearchApi = () => {
   const fetchData = async (query: string) => {
     try {
       setIsLoading(true);
-      let res = await fetch(`https://dummyjson.com/recipes/search?q=${query}`);
-      res = await res.json();
+      let res = await request(
+        `https://dummyjson.com/recipes/search?q=${query}&delay=100`
+      );
       setData(res.recipes);
       setIsLoading(false);
     } catch (error) {

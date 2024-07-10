@@ -1,3 +1,8 @@
+points
+- debounce
+- API retry
+- API cache
+
 RADIO
 - functional requiremnet
 1. auto complete
