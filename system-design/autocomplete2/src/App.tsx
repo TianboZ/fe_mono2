@@ -15,22 +15,22 @@ const wait = () => {
 };
 
 // with retry, with cache
-const request = async (...arg) => {
-  const key = JSON.stringify(arg[0]);
+const request = async (url, config) => {
+  const key = JSON.stringify(url);
   const entry = CACHE[key];
   let cnt = RETRY_COUNT;
   console.log("CACHE", CACHE);
-  const controller = new AbortController();
+  // const controller = new AbortController();
 
   if (!entry || Date.now() > entry.expire) {
     // make a fresh call
     while (cnt > 0) {
       try {
         const timeout = setTimeout(() => {
-          controller.abort();
+          // controller.abort();
         }, 10000);
 
-        let res = await fetch(arg[0], { signal: controller.signal });
+        let res = await fetch(url, config);
         res = await res.json();
         // success
         clearTimeout(timeout);
@@ -54,18 +54,29 @@ const useSearchApi = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
+  const controllerRef = useRef<AbortController>(null);
 
   const fetchData = async (query: string) => {
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
     try {
+      const controller = new AbortController();
+      controllerRef.current = controller;
       setIsLoading(true);
       let res = await request(
-        `https://dummyjson.com/recipes/search?q=${query}&delay=2000`
+        `https://dummyjson.com/recipes/search?q=${query}&delay=${
+          Math.random() * 5000
+        }`,
+        { signal: controller.signal }
       );
       setData(res.recipes || []);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       setError(error);
+    } finally {
+      controllerRef.current = null;
     }
   };
 
