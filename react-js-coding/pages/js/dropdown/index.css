@@ -1,0 +1,15 @@
+.item {
+  height: 20px;
+  position: relative;
+}
+.item:hover {
+  background-color: lightblue;
+  cursor: pointer;
+}
+
+.items {
+  position: absolute;
+  width: 150px;
+  border: 1px solid blue;
+  background-color: wheat;
+}
