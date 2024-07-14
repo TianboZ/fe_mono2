@@ -12,7 +12,8 @@
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.21.3"
+    "react-router-dom": "^6.21.3",
+    "lodash-es": "4.17.21"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
@@ -31,4 +32,3 @@
     "vite-plugin-react-pages": "^5.0.0"
   }
 }
-
