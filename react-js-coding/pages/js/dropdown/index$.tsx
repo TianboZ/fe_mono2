@@ -1,3 +1,13 @@
+/**
+ * example https://www.radix-ui.com/primitives/docs/components/dropdown-menu
+ * https://blog.logrocket.com/how-create-multilevel-dropdown-menu-react/
+ *
+ *
+ * useClickOutside:
+ * https://www.30secondsofcode.org/react/s/use-click-outside/
+ *
+ */
+
 import React, { ElementRef, useRef, useState } from "react";
 import "./index.css";
 import useClickOutside from "./useClickOutside";
