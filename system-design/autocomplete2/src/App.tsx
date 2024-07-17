@@ -64,7 +64,7 @@ const useSearchApi = () => {
       const controller = new AbortController();
       controllerRef.current = controller;
       setIsLoading(true);
-      let res = await request(
+      const res = await request(
         `https://dummyjson.com/recipes/search?q=${query}&delay=${
           Math.random() * 5000
         }`,

@@ -6,14 +6,9 @@ https://www.youtube.com/shorts/iXGOVcAe_xo
 method:
 1. useEffect + AbortController
 2. useEffect + flag
-3. component key
 
 **/
 import React, { useEffect, useState } from "react";
-
-const Div = ({ children }) => {
-  return <div>{children}</div>;
-};
 
 const getRandom = () => Math.random() * 5000;
 
