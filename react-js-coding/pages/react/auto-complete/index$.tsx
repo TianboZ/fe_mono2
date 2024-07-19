@@ -43,8 +43,8 @@ const fetchWithRetry = async (query, signal): Promise<string[]> => {
   throw new Error("api fail after 3 retries");
 };
 
-type SearchHookRes = {
-  data: any[];
+type SearchHookRes<T> = {
+  data: T;
   isLoading: boolean;
   isError: boolean;
   fetchData: (input: string) => Promise<void>;
@@ -58,8 +58,8 @@ const CACHE: Record<
   }
 > = {};
 
-const useSearch = (): SearchHookRes => {
-  const [data, setData] = useState([]);
+const useSearch = <T,>(): SearchHookRes<T> => {
+  const [data, setData] = useState<T>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const controllerRef = useRef();
@@ -106,22 +106,24 @@ const useSearch = (): SearchHookRes => {
 };
 
 const SearchBox = () => {
-  const [input, setInput] = useState("");
-  const { data, isLoading, isError, fetchData } = useSearch();
+  const [inputValue, setInputValue] = useState("");
+  const { data, isLoading, isError, fetchData } = useSearch<string[]>();
+
+  const onInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
 
   useEffect(() => {
-    if (input) {
-      fetchData(input);
+    if (inputValue) {
+      fetchData(inputValue);
     }
-  }, [input]);
+  }, [inputValue]);
 
   return (
     <AutoComplete
-      inputValue={input}
+      inputValue={inputValue}
       data={data}
-      onInputChange={(v) => {
-        setInput(v);
-      }}
+      onInputChange={onInputChange}
     />
   );
 };
