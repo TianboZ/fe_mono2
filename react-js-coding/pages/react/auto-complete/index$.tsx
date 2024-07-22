@@ -1,3 +1,11 @@
+/*
+topics
+1. handle error with retry
+2. handle reace condition, https://maxrozen.com/race-conditions-fetching-data-react-with-useeffect
+3. cache 
+4. debounce
+
+*/
 import React, { useCallback, useRef } from "react";
 import { useEffect, useState } from "react";
 import AutoComplete from "./AutoComplete";
