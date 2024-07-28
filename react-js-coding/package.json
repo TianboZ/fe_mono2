@@ -16,7 +16,8 @@
     "lodash-es": "4.17.21",
     "express": "^4.17.1",
     "socket.io": "^4.7.5",
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "immer": "10.1.1"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
