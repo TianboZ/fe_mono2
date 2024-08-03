@@ -7,20 +7,13 @@
 import React, { useCallback, useState } from "react";
 import throttle from "lodash-es/throttle";
 
-const colorNames = ["Red", "Green", "Blue", "Yellow", "Purple", "Orange"];
-
 const PADDING_NODES_CNT = 2;
-
-function getRandomColorName() {
-  const randomIndex = Math.floor(Math.random() * colorNames.length);
-  return colorNames[randomIndex];
-}
 
 function VirtualizedList({ items, itemHeight, containerHeight }) {
   const [scrollTop, setScrollTop] = useState(0);
   const startIndex = Math.max(
     0,
-    Math.ceil(scrollTop / itemHeight) - PADDING_NODES_CNT
+    Math.floor(scrollTop / itemHeight) - PADDING_NODES_CNT
   );
   const endIndex = Math.min(
     startIndex +
@@ -39,28 +32,37 @@ function VirtualizedList({ items, itemHeight, containerHeight }) {
 
   console.log(startIndex, endIndex);
   return (
-    <div
-      style={{ height: `${containerHeight}px`, overflowY: "scroll" }}
-      onScroll={handleScroll}
-    >
+    <div>
+      <div style={{ border: "2px solid red", background: "white" }}>
+        <div>debug</div>
+        <div>{scrollTop}</div>
+        <div>item height: {itemHeight}</div>
+        <div>container height: {containerHeight}</div>
+        <div>!!!{`translateY(${startIndex * itemHeight}px)`}</div>
+      </div>
       <div
-        style={{
-          height: `${items.length * itemHeight}px`,
-        }}
+        style={{ height: `${containerHeight}px`, overflowY: "scroll" }}
+        onScroll={handleScroll}
       >
         <div
           style={{
-            position: "relative",
-            height: `${visibleItems.length * itemHeight}px`,
-            // top: `${startIndex * itemHeight}px`,   transform is better perf
-            transform: `translateY(${startIndex * itemHeight}px)`,
+            height: `${items.length * itemHeight}px`,
           }}
         >
-          {visibleItems.map((item) => (
-            <div key={item.id} style={{ height: `${itemHeight}px` }}>
-              {item.content}
-            </div>
-          ))}
+          <div
+            style={{
+              position: "relative",
+              height: `${visibleItems.length * itemHeight}px`,
+              // top: `${startIndex * itemHeight}px`,   transform is better perf
+              transform: `translateY(${startIndex * itemHeight}px)`,
+            }}
+          >
+            {visibleItems.map((item) => (
+              <div key={item.id} style={{ height: `${itemHeight}px` }}>
+                {item.content}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -75,7 +77,10 @@ const App = () => {
         id: i,
         content: (
           <div
-            style={{ backgroundColor: getRandomColorName(), height: "100%" }}
+            style={{
+              backgroundColor: i % 2 == 0 ? "blue" : "wheat",
+              height: "100%",
+            }}
           >
             {i}
           </div>
@@ -85,7 +90,7 @@ const App = () => {
 
   console.log(items);
   return (
-    <div style={{ backgroundColor: "lightslategray", marginTop: 300 }}>
+    <div style={{ backgroundColor: "lightslategray", marginTop: 100 }}>
       <VirtualizedList containerHeight={600} itemHeight={70} items={items} />
     </div>
   );

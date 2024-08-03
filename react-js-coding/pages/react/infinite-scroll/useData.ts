@@ -21,7 +21,7 @@ const useData = () => {
       const _data = await res.json();
       // console.log(_data)
       setPage((prev) => prev + 1);
-      setData([...(data || []), ...(_data.results || [])]);
+      setData((prev) => [...(prev || []), ...(_data.results || [])]);
       // console.log(data)
     } catch (err) {
       setError(err);

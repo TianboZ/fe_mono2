@@ -9,78 +9,53 @@ when div is mounted, cb is called, (node: Element) => {...  }
 */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import "./App.css";
 import useData from "./useData";
 
 function App() {
   const { isLoading, data, fetchData } = useData();
   const observerRef = useRef<IntersectionObserver>();
 
-  const lastItemRef = useCallback(
-    (node: Element) => {
-      console.log(node);
+  const lastElementRef = (node) => {
+    console.log("lastElementRef called");
+    if (isLoading) {
+      console.log("returned due to isloading!");
+      return;
+    }
 
-      if (isLoading) {
-        return;
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        fetchData();
       }
+    });
 
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-
-      observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          fetchData();
-        }
-      });
-
-      if (node) {
-        observerRef.current.observe(node);
-      }
-    },
-    [fetchData]
-  );
-
-  // useEffect(() => {
-  //   console.log(lastElement)
-
-  //   if (isLoading) {
-  //     return
-  //   }
-
-  //   if (observerRef.current) {
-  //     observerRef.current.disconnect()
-  //   }
-
-  //   observerRef.current = new IntersectionObserver((entries) => {
-  //     if (entries[0].isIntersecting) {
-  //       fetchData();
-  //     }
-  //   })
-
-  //   if (lastElement) {
-  //     observerRef.current.observe(lastElement)
-  //   }
-
-  // }, [lastElement, fetchData])
+    if (node) {
+      observerRef.current.observe(node);
+    }
+  };
 
   if (isLoading && !data) {
     return <div>loading</div>;
   }
 
   return (
-    <div className="app">
-      {/* <List data={data} isLoading={isLoading} /> */}
+    <div
+      className="app"
+      style={{
+        height: 500,
+        backgroundColor: "wheat",
+        overflow: "scroll",
+      }}
+    >
       {data &&
         data.map((d, index) => {
           const last = index === data.length - 1;
           if (last) {
             return (
-              <div
-                ref={lastItemRef}
-                // ref={setLastElement}
-                key={index}
-              >
+              <div ref={lastElementRef} key={index}>
                 {d.name}
               </div>
             );
