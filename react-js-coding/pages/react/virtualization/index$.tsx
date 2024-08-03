@@ -36,6 +36,7 @@ function VirtualizedList({ items, itemHeight, containerHeight }) {
     }, 100),
     []
   );
+
   console.log(startIndex, endIndex);
   return (
     <div
