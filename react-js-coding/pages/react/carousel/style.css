@@ -1,0 +1,59 @@
+.card {
+  flex-shrink: 0;
+  flex-grow: 0;
+  transition: transform 300ms ease-in-out;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-container {
+  position: relative;
+  overflow: hidden;
+}
+
+
+.carousel-content {
+  display: flex;
+}
+
+.left-btn {
+  position: absolute;
+  top: 50%;
+  left: 0px;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.right-btn {
+  position: absolute;
+  top: 50%;
+  right: 0px;
+  cursor: pointer;
+  transform: translateY(-50%);
+
+}  
+
+.pagination {
+  display: flex;
+  gap: 10px;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dot-active {
+  background-color: blue;
+  cursor: pointer;
+
+}
+
+.dot {
+  background-color: yellow;
+  cursor: pointer;
+
+}
