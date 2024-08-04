@@ -1,0 +1,18 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#app {
+  font-family: 'Roboto', Arial, sans-serif;
+  background: #F0F2F4;
+  font-size: 1.2rem;
+}
+
+.li-item {
+  font-size: large;
+}
+
+.li-item:hover {
+  cursor: pointer;
+}
