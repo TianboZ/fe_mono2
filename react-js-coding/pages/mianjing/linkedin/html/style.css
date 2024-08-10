@@ -1,6 +1,7 @@
 html, body {
   height: 100%;
   margin: 0;
+  box-sizing: border-box;
 }
 
 #app {
@@ -15,4 +16,68 @@ html, body {
 
 .li-item:hover {
   cursor: pointer;
+}
+
+
+.tooltip {
+  margin: 100px;
+  position: relative;
+  cursor: pointer;
+  /* background-color: blue; */
+  padding: 5px;
+  width: 150px;
+  border-bottom: dotted 1px black;
+}
+
+.tooltip::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -30px;
+  height: 20px;
+  background-color: yellow;
+  padding: 5px;
+  /* max-width: 100%; */
+  visibility: hidden;
+  transition: all 200ms ease-in-out;
+  opacity: 0;
+ 
+}
+
+.tooltip::after {
+  position: absolute;
+  left: 50%;
+  top: -1px;
+  transform: translateX(-50%);
+  border: 10px solid transparent;
+  content: "";
+  border-top-color: yellow; 
+
+  visibility: hidden;
+  transition: all 200ms ease-in-out;
+  opacity: 0;
+}
+
+.tooltip:hover::before, .tooltip:hover::after {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+#content {
+  height: auto;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.item {
+  height: 100px;
+  margin-bottom: 10px;
+  background-color: green;
+  padding: 10px;
+}
+
+#observer {
+  height: 10px;
+  visibility: hidden;
 }

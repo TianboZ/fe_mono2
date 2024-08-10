@@ -5,6 +5,9 @@ const endorsements = [
   { skill: "css", user: "Sue" },
   { skill: "javascript", user: "Sue" },
   { skill: "html", user: "Sue" },
+  { skill: 1, user: "Sue" },
+  { skill: 1, user: "Sue2" },
+  { skill: "1", user: "Sue3" },
 ];
 // output skills
 // [
@@ -55,3 +58,38 @@ for (const entry of endorsements) {
 const skills2 = Object.values(obj2);
 skills2.sort((a, b) => a.count - b.count); // increasing order
 console.log(skills2);
+
+/*
+hashmap solution
+
+{ 
+  skill: {
+    skill: '',
+    users: [],
+    count: 0
+  }
+}
+
+*/
+const obj3 = new Map();
+for (let entry of endorsements) {
+  const skill = entry.skill;
+  const user = entry.user;
+  if (obj3.has(skill)) {
+    const info = obj3.get(skill);
+    info.count += 1;
+    info.users.push(user);
+  } else {
+    obj3.set(skill, {
+      users: [user],
+      skill,
+      count: 1,
+    });
+  }
+}
+
+console.log(obj3);
+const res = [...obj3.values()];
+
+res.sort((a, b) => (a.count >= b.count ? 1 : -1)); // increasing order
+console.log(res);

@@ -6,10 +6,27 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
     <link rel="stylesheet" href="./style.css"> 
     <script type="module" src="./main.js"></script>
+    <script type="module" src="./infinite_scroll.js"></script>
     <title>HTML | CoderPad</title>
   </head>
   <body>
     <div id="app" class="app-class">
+      <div>
+        <div>
+          event handler 
+        </div>
+        <button onclick="(function() {
+          alert('1')
+        })()">onclick="(function() {
+          alert('1')
+        })()"</button>
+        <button onclick="showAlert()">
+          onclick="showAlert()" 
+        </button>
+        <button id="explicity">
+          explicity set eventhandler  on dom elemnet
+        </button>
+      </div>
       <h1 id="h1" style="background-color: blue; ">
         h1111, id: h1
         <div>div1</div>
@@ -23,6 +40,23 @@
       </ul>
       <div id="header" class="title">header</div>
       <div id="footer" class="title">footer</div>
+
+      <div class="tooltip"  data-tooltip="this is tooltip">
+        tooltip text
+      </div>
     </div>
+    <div id="content"></div>
+    <div id="observer"></div>
   </body>
+  <script>
+    function showAlert() {
+      alert('1');
+    }
+
+    const btn = document.getElementById('explicity')
+    btn.onclick = function(e) {
+      console.log(e)
+      alert('explicity set eventhandler  on dom elemnet')
+    }
+  </script>
 </html>
