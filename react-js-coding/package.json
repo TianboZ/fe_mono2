@@ -7,35 +7,38 @@
     "server": "ts-node-dev  --project tsconfig.node.json server/index.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cypress": "cypress open"
   },
   "dependencies": {
+    "express": "^4.17.1",
+    "immer": "10.1.1",
+    "lodash-es": "4.17.21",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.21.3",
-    "lodash-es": "4.17.21",
-    "express": "^4.17.1",
     "socket.io": "^4.7.5",
-    "socket.io-client": "^4.7.5",
-    "immer": "10.1.1"
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
+    "@types/express": "^4.17.13",
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.13.1",
     "@typescript-eslint/parser": "^7.13.1",
     "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^6.3.0",
+    "cypress": "^13.13.2",
     "eslint": "^8.57.0",
+    "eslint-plugin-cypress": "3.5.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "path": "0.12.7",
     "serve": "^14.2.1",
+    "ts-node-dev": "2.0.0",
     "typescript": "^5.2.2",
     "vite": "^5.3.1",
-    "vite-plugin-react-pages": "^5.0.0",
-    "ts-node-dev": "2.0.0",
-    "@types/express": "^4.17.13",
-    "concurrently": "^6.3.0"
+    "vite-plugin-react-pages": "^5.0.0"
   }
 }
