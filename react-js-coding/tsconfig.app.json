@@ -23,5 +23,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src", "node_modules/cypress", "./cypress/**/*.js", "cypress/e2e/apis.cy.ts"]
 }
+

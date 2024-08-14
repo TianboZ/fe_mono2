@@ -1,3 +1,4 @@
+// @ts-nocheck
 describe("apis", () => {
   beforeEach(() => {
     cy.login();

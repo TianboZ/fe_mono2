@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 describe("todos", () => {
   beforeEach(() => {
     cy.login();
