@@ -1,5 +1,5 @@
 {
-  "include": ["node_modules/cypress", "./cypress/**/*.js"],
+  "include": ["node_modules/cypress", "./cypress/**/*.js", "cypress/e2e/apis.cy.ts"],
   "files": [],
   "references": [
     {

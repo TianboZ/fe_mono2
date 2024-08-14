@@ -3,20 +3,18 @@ describe("todos", () => {
     cy.login();
   });
 
-  // each it, refresh page
+  // each `it`, refresh page
   it("add/remove/toggle todo", () => {
-    const input = cy.get("input");
-
     // add first todo
     const todo1 = 222;
-    input.type(todo1).type("{enter}");
+    cy.get(`[data-cy="todo-input"]`).type(todo1).type("{enter}");
     cy.contains(todo1).should("exist");
 
     cy.wait(500);
 
     // add second todo
     const todo2 = 333;
-    input.type(todo2).type("{enter}");
+    cy.get(`[data-cy="todo-input"]`).type(todo2).type("{enter}");
     cy.contains(todo2).should("exist");
 
     cy.wait(500);
@@ -40,7 +38,7 @@ describe("todos", () => {
 
     // add todo3
     const todo3 = "toggle me";
-    input.type(todo3).type("{enter}");
+    cy.get(`[data-cy="todo-input"]`).type(todo3).type("{enter}");
     cy.contains(todo3).should("exist");
 
     cy.wait(500);
