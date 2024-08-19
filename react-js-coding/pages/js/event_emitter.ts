@@ -64,10 +64,10 @@ em.emit("print", [1, 2]).then((res) => {
   console.log(res);
 });
 
-const fetchAPI = (arg) =>
+const fetchAPI = (...arg): Promise<any> =>
   new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve(arg);
+      resolve(...arg);
       // console.log(arg);
     }, 1000 * 3);
   });
