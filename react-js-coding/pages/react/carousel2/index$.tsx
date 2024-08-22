@@ -14,6 +14,7 @@ type CarouselProps = {
   // event
   onItemView?: () => {};
 };
+
 const Carousel = ({
   data,
   aspectRatio = "4/3",
