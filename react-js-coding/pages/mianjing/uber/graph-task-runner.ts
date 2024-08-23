@@ -59,13 +59,13 @@
 // });
 
 import taskGraphRunner from "task-graph-runner";
-// const taskGraphRunner = require("task-graph-runner");
+// const taskGraphRunner = require("graph-runner");
 
 const graph = new Map([
-  ["task-a", ["task-d"]], // task-a depends on task-d
-  ["task-b", ["task-d", "task-a"]],
-  ["task-c", ["task-d"]],
-  ["task-d", []],
+  ["a", ["d"]], // task-a depends on task-d
+  ["b", ["d", "a"]],
+  ["c", ["d"]],
+  ["d", []],
   ["e", []],
   ["f", []],
 ]);
@@ -77,10 +77,12 @@ const exec = (name) =>
     }, 1000);
   });
 
+const t = Date.now();
+
 async function task(name) {
-  console.log(`start ${name} at: `, Date.now());
+  console.log(`start ${name} at: `, Date.now() - t);
   const result = await exec(name);
-  console.log(`end ${name} at`, Date.now());
+  console.log(`end ${name} at`, Date.now() - t);
   return result;
 }
 
