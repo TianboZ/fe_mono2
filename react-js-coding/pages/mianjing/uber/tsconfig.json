@@ -8,4 +8,7 @@
     "strict": true,
     "noEmit": true
   },
+  "ts-node": {
+    "transpileOnly": true
+  }
 }

@@ -67,9 +67,8 @@ const graph = new Map([
   ["c", ["d"]],
   ["d", []],
   ["e", []],
-  ["f", []],
+  ["f", ["b"]],
 ]);
-
 const exec = (name) =>
   new Promise((resolve) => {
     setTimeout(() => {
@@ -87,4 +86,6 @@ async function task(name) {
 }
 
 // taskGraphRunner(111);
-const results = taskGraphRunner({ graph, task });
+const results = taskGraphRunner({ graph, task }).then((res) => {
+  console.log(res);
+});
