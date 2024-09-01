@@ -65,8 +65,8 @@ function runAsyncGraph(graph, callback) {
       const depTasksPromises = depTasks.map((_t) => runTask(_t));
       await Promise.all(depTasksPromises);
       let taskFunc = asyncGraph[task].task;
-      taskFunc = promisify(taskFunc);
-      await taskFunc;
+      const taskPromise = promisify(taskFunc);
+      await taskPromise;
     };
 
     const taskP = generatePromise();

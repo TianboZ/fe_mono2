@@ -119,7 +119,7 @@ const fakeAPICall3 = (query) =>
     console.log("fakeAPICall3 invoke, query:", query);
     setTimeout(() => {
       resolve(query);
-    }, 100);
+    }, 1000);
   });
 
 const memorizedFunc = memoAsyncFunc(fakeAPICall3);
