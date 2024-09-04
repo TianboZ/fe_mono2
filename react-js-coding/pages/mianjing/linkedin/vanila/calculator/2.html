@@ -1,0 +1,168 @@
+<html>
+  <head>
+    <style>
+      .calculator {
+        width: 400px;
+        background-color: wheat;
+      }
+      .buttons {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .display {
+        background-color: yellow;
+        height: 50px;
+        color: black;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calculator">
+      <div id="display" class="display">0</div>
+      <div class="buttons">
+        <button data-val="1">1</button>
+        <button data-val="2">2</button>
+        <button data-val="3">3</button>
+        <button data-val="+">+</button>
+        <button data-val="4">4</button>
+        <button data-val="5">5</button>
+        <button data-val="6">6</button>
+        <button data-val="-">-</button>
+        <button data-val="7">7</button>
+        <button data-val="8">8</button>
+        <button data-val="9">9</button>
+        <button data-val="*">*</button>
+        <button data-val="0">0</button>
+        <button data-val="C">c</button>
+        <button data-val="=">=</button>
+        <button data-val="/">/</button>
+      </div>
+    </div>
+    <script>
+      const elDisplay = document.querySelector(".display");
+      const elButtons = document.querySelector(".buttons");
+      let currentExp = "";
+      let currentInput = "";
+
+      const updateDisplay = (val) => {
+        elDisplay.innerHTML = val;
+      };
+
+      elButtons.addEventListener("click", (e) => {
+        const elButton = e.target;
+        const val = elButton.getAttribute("data-val");
+        console.log(val);
+
+        if (val === "C") {
+          // clear all
+          currentExp = "";
+          currentInput = "";
+          updateDisplay("0");
+        } else if (val === "=") {
+          // calcualte
+          currentExp += currentInput;
+          console.log(currentExp);
+          const res = eval(currentExp);
+          updateDisplay(res);
+
+          // reset
+          currentExp = "";
+          currentInput = "";
+        } else if (["+", "-", "*", "/"].includes(val)) {
+          // operands
+          if (currentInput === "") {
+            return;
+          }
+          // `` -> `1`
+          currentExp += currentInput;
+          // `1` => `1+`
+          currentExp += val;
+          // reset num
+          currentInput = "";
+        } else {
+          // number
+          currentInput += val;
+          updateDisplay(currentInput);
+        }
+      });
+    </script>
+    <!-- <script>
+      const elDisplay = document.getElementById("display");
+      const elButtons = document.querySelector(".buttons");
+      let currentInput = ""; // Stores the current number being typed
+      let expression = ""; // Stores the entire expression as a string
+
+      const updateDisplay = (value) => {
+        elDisplay.textContent = value;
+      };
+
+      elButtons.addEventListener("click", (event) => {
+        const elButton = event.target;
+        const value = elButton.getAttribute("data-val");
+
+        if (!value) return; // Ignore clicks that are not on buttons
+
+        if (value === "C") {
+          // Clear everything
+          currentInput = "";
+          expression = "";
+          updateDisplay("0");
+        } else if (value === "=") {
+          // Evaluate the expression
+          if (expression) {
+            expression += currentInput; // Append the last number to the expression
+            try {
+              const result = eval(expression);
+              updateDisplay(result);
+              expression = ""; // Clear the expression for next input
+              currentInput = result.toString(); // Start new input with the result
+            } catch (error) {
+              updateDisplay("Error");
+              expression = "";
+              currentInput = "";
+            }
+          }
+        } else if (["+", "-", "*", "/"].includes(value)) {
+          // Handle operator input
+          if (currentInput !== "") {
+            expression += currentInput + value; // Append the current number and operator to the expression
+            currentInput = ""; // Clear current input for the next number
+          }
+        } else {
+          // Handle digit input
+          currentInput += value; // Build the current number
+          updateDisplay(currentInput); // Show the current number
+        }
+      });
+    </script> -->
+  </body>
+</html>
+
+<!-- 
+ eval() issues:
+ security issue
+ code injection attack, it can run malicious code with all authentication on current site!
+
+
+ function safeEval(expression) {
+    // Define a regex that matches valid characters: digits, operators, and whitespace
+    const validPattern = /^[0-9+\-*/\s]+$/;
+
+    // Check if the expression contains only valid characters
+    if (validPattern.test(expression)) {
+        try {
+            // Evaluate the expression using eval
+            return eval(expression);
+        } catch (error) {
+            return 'Error';
+        }
+    } else {
+        return 'Invalid Expression';
+    }
+}
+
+
+
+-->

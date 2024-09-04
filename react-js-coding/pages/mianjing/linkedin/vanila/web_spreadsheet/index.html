@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Spreadsheet</title>
+    <style>
+      .spreadsheet {
+        display: grid;
+        grid-template-columns: repeat(5, 100px); /* 5 columns */
+        gap: 2px;
+      }
+
+      .cell {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .cell input {
+        width: 100%;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+      }
+
+      .cell input:focus {
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="spreadsheet">
+      <div class="cell">A1</div>
+      <div class="cell">B1</div>
+      <div class="cell">C1</div>
+      <div class="cell">D1</div>
+      <div class="cell">E1</div>
+      <div class="cell">A2</div>
+      <div class="cell">B2</div>
+      <div class="cell">C2</div>
+      <div class="cell">D2</div>
+      <div class="cell">E2</div>
+      <!-- Add more cells as needed -->
+    </div>
+
+    <script>
+      const cells = document.querySelectorAll(".cell");
+
+      cells.forEach((cell) => {
+        cell.addEventListener("dblclick", function () {
+          enterEditMode(cell);
+        });
+      });
+
+      function enterEditMode(cell) {
+        const currentText = cell.textContent;
+
+        // Create an input element
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = currentText;
+
+        // Clear the cell and add the input field
+        cell.textContent = "";
+        cell.appendChild(input);
+
+        // Focus the input and place cursor at the end
+        input.focus();
+        input.setSelectionRange(currentText.length, currentText.length);
+
+        // Handle exit from edit mode on Enter key
+        input.addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            exitEditMode(cell, input);
+          }
+        });
+
+        // Handle exit from edit mode if the input loses focus
+        input.addEventListener("blur", function () {
+          exitEditMode(cell, input);
+        });
+      }
+
+      function exitEditMode(cell, input) {
+        const newValue = input.value;
+        cell.textContent = newValue;
+      }
+    </script>
+  </body>
+</html>

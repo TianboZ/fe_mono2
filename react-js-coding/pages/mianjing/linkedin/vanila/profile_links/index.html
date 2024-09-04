@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      /* .link {
+        display: block;
+      } */
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div id="content">
+        <a href="/profile?id=[id]"> [Member Name]</a>
+        <!-- <div class="test"></div> -->
+      </div>
+    </div>
+    <script>
+      const members = [
+        { id: 1, name: "a112" },
+        { id: 2, name: "b4423" },
+        { id: 3, name: "csf3" },
+      ];
+      const elAnchor = document.querySelector("#content a");
+      const elContent = document.querySelector("#content");
+
+      const renderLinks = () => {
+        elContent.innerHTML = "";
+
+        members.forEach((member, idx) => {
+          const elLink = document.createElement("a");
+          const elLi = document.createElement("li");
+
+          elLink.innerText = `${member.name}`;
+          elLink.classList.add("link");
+          elLink.href = `/profile?id=${member.id}`;
+          elLink.setAttribute("data-id", member.id);
+
+          elLi.appendChild(elLink);
+          elContent.appendChild(elLi);
+        });
+      };
+
+      renderLinks();
+
+      elContent.addEventListener("click", (e) => {
+        console.log(e.target.nodeName);
+        if (e.target && e.target.nodeName === "A") {
+          event.preventDefault();
+          const elAnchor = e.target;
+          console.log(elAnchor.dataset);
+          const dataset = elAnchor.dataset;
+          console.log(dataset.id, elAnchor.href);
+          window.open(elAnchor.href);
+        }
+      });
+    </script>
+  </body>
+</html>

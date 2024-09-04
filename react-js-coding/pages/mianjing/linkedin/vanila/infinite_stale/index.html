@@ -1,0 +1,108 @@
+<!-- 
+
+/posts?page=0 => [{id: 1, title: 'post 1'}, {id: 2, title: 'post 2'}... ]
+
+
+-->
+<html>
+  <head>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      .post-list {
+        border: 1px solid red;
+        height: 500px;
+        overflow: scroll;
+      }
+      .bottom {
+        /* height: 100px; */
+        visibility: hidden;
+      }
+      .post {
+        color: blue;
+        height: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      infinite scroll
+      <div class="post-list">
+        <div class="bottom"></div>
+      </div>
+    </div>
+    <script>
+      const elList = document.querySelector(".post-list");
+      const getBottomElement = () => document.querySelector(".bottom");
+      let elBottom = getBottomElement();
+      let isLoading = false;
+      let page = 0;
+
+      const observer = new IntersectionObserver((entries) => {
+        // check if the observed element is in view
+        if (entries[0].isIntersecting) {
+          console.log("111111");
+          loadData();
+        }
+      });
+
+      observer.observe(elBottom);
+
+      // mock API call
+      const apiCall = (page) =>
+        new Promise((resolve, reject) => {
+          const size = 10;
+          const data = Array(size)
+            .fill(1)
+            .map((_, idx) => ({ id: page * size + idx }));
+
+          setTimeout(() => {
+            resolve(data);
+          }, 500);
+        });
+
+      const loadData = async () => {
+        console.log("loadData:", page);
+        if (isLoading) {
+          return;
+        }
+
+        if (page >= 10) {
+          return;
+        }
+
+        try {
+          // set loading status
+          const elLoading = document.createElement("div");
+          elLoading.innerText = "loading!";
+          elList.appendChild(elLoading);
+
+          // API call
+          const data = await apiCall(page);
+          elList.removeChild(elLoading);
+          console.log(data);
+          page += 1;
+
+          // append new elements to the list
+          data.forEach((_d) => {
+            const elItem = document.createElement("li");
+            elItem.classList.add("post");
+            elItem.textContent = `post id: ${_d.id}`;
+            elList.insertBefore(elItem, elBottom);
+          });
+
+          // reset intersection observer
+          observer.unobserve(elBottom);
+          elBottom = getBottomElement();
+          observer.observe(elBottom);
+        } catch (err) {
+        } finally {
+          isLoading = false;
+        }
+      };
+
+      function scrollHandler() {}
+    </script>
+  </body>
+</html>

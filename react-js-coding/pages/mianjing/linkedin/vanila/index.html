@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./vite.svg" />
+    <link rel="stylesheet" href="./style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <style>
+      .btn2 {
+        background-color: blue;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <div>
+        <a href="https://vitejs.dev" target="_blank">
+          <img src="./public/vite.svg" class="logo" alt="Vite logo" />
+        </a>
+        <a
+          href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"
+          target="_blank"
+        >
+          <img
+            src="./public/javascript.svg"
+            class="logo vanilla"
+            alt="JavaScript logo"
+          />
+        </a>
+        <h1>Hello Vite!</h1>
+        <div class="card">
+          +
+          <button id="counter" type="button"></button>
+        </div>
+        <div class="btn2">
+          -
+          <button id="counter2"></button>
+        </div>
+        <p class="read-the-docs">Click on the Vite logo to learn more</p>
+      </div>
+    </div>
+    <!-- <script type="module" src="./main.js"></script> -->
+
+    <script>
+      let counterBtn = document.querySelector("#counter");
+      // counterBtn = document.getElementById("#counter");
+      let btn2 = document.querySelector("#counter2");
+
+      function initCounter(element) {
+        let counter = 0;
+
+        const setCounter = (count) => {
+          counter = count;
+          element.innerHTML = `count is ${counter}`;
+          console.log(element);
+        };
+        element.addEventListener("click", () => setCounter(counter + 1));
+        // element.addEventListener("mouseenter", () => setCounter(counter + 1));
+
+        setCounter(0);
+      }
+
+      function initCounter2(element) {
+        let val = 0;
+        element.innerHTML = `counter: ${val}`;
+        element.addEventListener("click", () => {
+          val -= 1;
+          element.innerHTML = `counter: ${val}`;
+        });
+      }
+
+      initCounter(counterBtn);
+
+      initCounter2(btn2);
+    </script>
+  </body>
+</html>

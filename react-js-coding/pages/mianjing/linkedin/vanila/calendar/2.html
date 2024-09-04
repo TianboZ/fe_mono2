@@ -1,0 +1,155 @@
+<html>
+  <header>
+    <style>
+      .calendar {
+        background-color: black;
+        color: white;
+        width: 300px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        color: gray;
+      }
+
+      .dates {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+      }
+
+      .date {
+      }
+
+      .date:hover {
+        cursor: pointer;
+      }
+
+      .date-active {
+        color: green;
+      }
+
+      .date-selected {
+        color: blue;
+      }
+    </style>
+  </header>
+  <body>
+    <div class="calendar">
+      <div class="header">
+        <button id="prev">prev</button>
+        <div id="curr"></div>
+        <button id="next">next</button>
+      </div>
+      <div class="days">
+        <div>S</div>
+        <div>M</div>
+        <div>T</div>
+        <div>W</div>
+        <div>T</div>
+        <div>F</div>
+        <div>S</div>
+      </div>
+      <div class="dates"></div>
+      <div class="display">
+        <div class="display-day"></div>
+        <div class="display-date"></div>
+      </div>
+    </div>
+    <script>
+      const monthName = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apir",
+        "May",
+        "June",
+        "July",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dev",
+      ];
+
+      const elDates = document.querySelector(".dates");
+      const elCurrMonthYear = document.getElementById("curr");
+      const elPrevBtn = document.getElementById("prev");
+      const elNextBtn = document.getElementById("next");
+      const elDisplayDay = document.querySelector(".display-day");
+      const elDisplayDate = document.querySelector(".display-date");
+
+      let dateObj = new Date();
+      let selectedDate;
+
+      const renderCalendar = () => {
+        // Clear previous dates
+        elDates.innerHTML = "";
+
+        let year = dateObj.getFullYear();
+        let month = dateObj.getMonth(); // 0-11
+
+        let start = new Date(year, month, 1);
+        let end = new Date(year, month + 1, 0);
+
+        let startDay = start.getDay(); // 0-6
+        let endDate = end.getDate(); // 1-31
+
+        console.log(startDay, endDate);
+        // render in current year, month
+        elCurrMonthYear.innerText = `${year} ${monthName[month]}`;
+
+        // render in days from prev month
+        for (let i = 0; i < startDay; i++) {
+          const elEmptyDate = document.createElement("div");
+          elDates.appendChild(elEmptyDate);
+        }
+
+        // render in days in current month
+        for (let i = 1; i <= endDate; i++) {
+          const date = new Date();
+          const isCurrentDate =
+            i === date.getDate() &&
+            month === date.getMonth() &&
+            year === date.getFullYear();
+
+          const elDate = document.createElement("div");
+          elDate.classList.add("date");
+          if (isCurrentDate || selectedDate == i) {
+            elDate.classList.add("date-active");
+          }
+          elDate.innerText = `${i}`;
+          elDates.appendChild(elDate);
+        }
+      };
+
+      renderCalendar();
+
+      // add event lisnters to prev/next month button
+      elNextBtn.addEventListener("click", () => {
+        dateObj.setMonth(dateObj.getMonth() + 1);
+        renderCalendar();
+      });
+
+      elPrevBtn.addEventListener("click", () => {
+        dateObj.setMonth(dateObj.getMonth() - 1);
+        renderCalendar();
+      });
+
+      // add event listner to elDates element, select date, hightlight it
+      elDates.addEventListener("click", (e) => {
+        console.log(e.target.textContent);
+
+        document.querySelectorAll(".date").forEach((ele) => {
+          ele.classList.remove("date-active", "date-selected");
+        });
+        e.target.classList.add("date-selected");
+      });
+    </script>
+  </body>
+</html>

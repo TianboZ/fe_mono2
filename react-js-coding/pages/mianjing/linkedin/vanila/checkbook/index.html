@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      .check {
+        width: 1000px;
+        height: 500px;
+        background-color: wheat;
+        padding: 10px;
+      }
+      .amount {
+        visibility: hidden;
+      }
+
+      .pay-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .writen-amount-row {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app">app template1</div>
+    <div class="check">
+      <address>
+        linkedin company 450 n mathilda ave moutainview, ca 94085
+      </address>
+      <form action="">
+        <div class="pay-row">
+          <div><label class="pay-to">pay to</label><input type="text" /></div>
+          <div>
+            <label class="amount">amount</label>
+            <input type="text" placeholder="$xxx.yy" />
+          </div>
+        </div>
+
+        <div class="writen-amount-row">
+          <input
+            class="written-input"
+            type="text"
+            placeholder="written amount of dollars"
+          />
+          <label>Dollars</label>
+        </div>
+
+        <div class="memo-row">
+          <label class="memo-input">memo</label>
+          <input class="memo" type="text" placeholder="memo note" />
+        </div>
+      </form>
+    </div>
+    <script></script>
+  </body>
+</html>
