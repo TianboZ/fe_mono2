@@ -23,8 +23,7 @@ class Solution:
       
       if r == end[0] and c == end[1]:
         # find target node
-        # break
-        pass
+        break
       
       # generate 
       for dir in dirs:
@@ -102,4 +101,4 @@ grid = [
   [1, 1, 1, 1]
 ]
 
-sol.findPath2(grid, [0, 1], [3, 3])
+sol.findPath(grid, [0, 1], [3, 3])

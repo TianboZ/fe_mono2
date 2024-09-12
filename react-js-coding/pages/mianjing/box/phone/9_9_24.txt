@@ -1,0 +1,245 @@
+/*
+take away:
+API design
+database choose decision
+schema design, relationship between tables
+
+*/
+5 REST API:
+Get Cart Items, Add Item, Remove Item, Update Quantity of Item, Checkout
+
+assumption
+1 cart per user
+
+POST api/cart/add
+request 
+{
+    cart_id: 'c123' // optional
+    item_id: 'i123',
+    count: 1,
+    user_id: 'u123'  // we have differernt to authenticate API, cookie, token 
+}
+
+response {
+    cart_id: 'c123',
+    status: 0,
+    message: ''
+}
+
+
+POST api/cart/update
+serve both update and remove operation
+request 
+{
+    cart_id: 'c123', // optional,
+    item_id: 'i1123',
+    count: 2,
+    user_id: 'u123'
+}
+
+response {
+    status: 0,
+    message: ''
+}
+
+GET api/cart/items
+paginated API
+
+request
+{
+    cart_id: 'c123',
+    page: 1
+}
+
+reqponse 
+{
+    pagination: {
+        next_page: 2,
+        total_pages: 10,
+    }
+    status: 0,
+    message: '',
+    data: [
+        {
+            item_id: 'i123',
+            des: '',
+            link: URL,
+            count: 3,
+        }
+    ]
+}
+
+
+
+POST api/cart/checkout
+request 
+{
+    cart_id: 'c123'
+}
+response 
+{
+    status: 0,
+    message: '',
+    detail_page_url: URL
+}
+
+
+Step 2
+database schema 
+choose relational DB over no NOSQL
+
+Entity
+
+User
+- user_id: uuid, PK
+- email: string
+- pw_hash: string
+- cart_id: string
+
+
+Cart
+- cart_id, PK
+- user_Id: FK
+
+Cart<>Item: many to many relationship
+CartItem
+- id: PK
+- item_id: FK
+- cart_id: FK
+- quantity: integer
+- added_time: timestamp
+
+Item
+- item_id: uuid, PK
+- desc: string
+- avalibility: integer
+- price: integer
+- link: string
+
+
+
+Scaling 
+request flow
+HTTP request -> LB -> API services -> cache --> DB
+
+DB optimization:
+- DB sharding 
+
+LB 
+- consistent hasing algo
+
+
+------
+
+HTML page - shopping cart component - items - name, quantity, price
+check out button
+Java script - what happens when the checkout button is clicked
+
+React
+container/view patttern
+
+- ShoppingCartContainer
+    - ShoppingCart
+
+
+
+// below is .jsx code
+
+const API = `...`
+
+const useCartItems = (cart_id: string) => {
+    const [items, setItems] = useState([])
+    const [isLoading, isLoadingItems] = useState(false)
+
+    fetchItems = async ()=>{
+        isLoadingItems(true)
+        try {
+            const resp = await fetch(`API?cart_id=${cart_id}`)
+            const data = await resp.json()
+            setData(data.items)
+        } catch(err) {
+            // todo
+        } finally {
+            isLoadingItems(false)
+        }
+    }
+    
+    useEffect(()=>{
+        fetchItems()
+    }, [])
+    
+    return {
+        isLoadingItems,
+        items
+    }
+}
+
+const ShoppingCartContainer = ({cart_id})=>{
+    const {items, isLoadingItems} = useCartItems(cart_id)
+    const [isCheckingOut, setIsCheckingOut] = useState(faslse)
+    const [isCheckoutSuccess, setIsCheckoutSuccess] = useState(faslse)
+    
+    const handleQuantityChange = (quantity: number)=>{
+        // API call....
+    }
+    
+    const handleCheckout = async ()=> {
+        // API call
+        setIsCheckingOut(true)
+        try {
+            const resp = await fetch(`api/cart/checkout`, {
+                method: 'POST',
+                paylaod: {
+                    cart_id,
+                }
+            })
+            const data = await resp.json();
+        } catch(err) {
+            // todo: API automaticlly retry, send error log id to Sentry monitoring system
+        } finally {
+            setIsCheckingOut(false)
+        }
+    }
+    
+    return (
+        <ShoppingCart items={items} isLoadingItems={isLoadingItems}  handleCheckout={handleCheckout} handleQuantityChange={handleQuantityChange}  /> 
+    )
+}
+
+const ShoppingCart = ({items, isLoadingItems, isCheckingOut, handleQuantityChange, handleCheckout}) => {
+    
+    if (isLoadingItems) {
+        return <Skeleleton />
+    }
+    
+    return (
+        <div>
+            <div>
+                {items && items.map( (item, index) =>  
+                    <div>
+                        // assume it is <Item /> component
+                        <div>{item.image}</div>
+                        <div>{item.url}</div>
+                        <div>{item.qunantity}</div>
+                        <div>{item.price}</div>
+                        <button  onClick={()=> handleQuantityChange(item.qunantity + 1) }  >+</button>
+                        <button  onClick={()=> handleQuantityChange(item.qunantity - 1) }  >-</button>
+                    </div> )}
+            </div>
+            <button onClick={handleCheckout}>{isCheckingOut ? 'checkingout...' : 'checkout'}</button>
+        </div>
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
