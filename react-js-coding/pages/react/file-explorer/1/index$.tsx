@@ -47,7 +47,7 @@ export const data: File[] = [
   },
 ];
 
-const FilesTree = ({ data }: { data: File[] }) => {
+const FileExplorer = ({ data }: { data: File[] }) => {
   const [openStatus, setOpenStatus] = useState(() => {
     // initial state
     const tmp = {};
@@ -82,7 +82,7 @@ const FilesTree = ({ data }: { data: File[] }) => {
               </button>
               {d.children && (
                 <div style={{ display: isOpen ? "block" : "none" }}>
-                  <FilesTree data={d.children} />
+                  <FileExplorer data={d.children} />
                 </div>
               )}
             </div>
@@ -94,7 +94,7 @@ const FilesTree = ({ data }: { data: File[] }) => {
 };
 
 const App = () => {
-  return <FilesTree data={data} />;
+  return <FileExplorer data={data} />;
 };
 
 export default App;

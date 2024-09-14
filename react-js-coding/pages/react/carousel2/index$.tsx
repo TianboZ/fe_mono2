@@ -49,45 +49,47 @@ const Carousel = ({
   }, []);
 
   return (
-    <div>
-      <div className="carousel-container" style={{ width }}>
-        <div className="carousel-content">
-          {data.map((item, i) => (
+    <div className="carousel-container" style={{ width }}>
+      <div
+        className="carousel-content"
+        style={{
+          transform: `translateX(${-100 * currentIdx}%)`,
+        }}
+      >
+        {data.map((item, i) => (
+          <div
+            style={{
+              width,
+              aspectRatio,
+            }}
+            className="card"
+            key={i}
+          >
+            <img className="image" src={item.src} alt={item.alt} />
+          </div>
+        ))}
+      </div>
+      <button className="left-btn" onClick={handleScrollPrev}>
+        prev
+      </button>
+      <button className="right-btn" onClick={handleScrollNext}>
+        next
+      </button>
+      <div className="dots">
+        {data.map((_, i) => {
+          const isActive = i === currentIdx;
+          return (
             <div
-              style={{
-                width,
-                transform: `translateX(${-100 * currentIdx}%)`,
-                aspectRatio,
-              }}
-              className="card"
               key={i}
+              className={isActive ? "dot-active" : "dot"}
+              onClick={() => {
+                setCurrentIdx(i);
+              }}
             >
-              <img className="image" src={item.src} alt={item.alt} />
+              x
             </div>
-          ))}
-        </div>
-        <button className="left-btn" onClick={handleScrollPrev}>
-          prev
-        </button>
-        <button className="right-btn" onClick={handleScrollNext}>
-          next
-        </button>
-        <div className="dots">
-          {data.map((_, i) => {
-            const isActive = i === currentIdx;
-            return (
-              <div
-                key={i}
-                className={isActive ? "dot-active" : "dot"}
-                onClick={() => {
-                  setCurrentIdx(i);
-                }}
-              >
-                x
-              </div>
-            );
-          })}
-        </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -103,7 +105,7 @@ const DATA = [
 const App = () => {
   return (
     <div>
-      <Carousel data={DATA} width="400px" aspectRatio="4/3" />
+      <Carousel data={DATA} width="400px" aspectRatio="5/3" />
     </div>
   );
 };
