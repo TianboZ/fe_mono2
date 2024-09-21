@@ -26,14 +26,16 @@ const Lights = ({}) => {
   const [isDeactiving, setIsDeactivating] = useState(false);
 
   const handleCellClick = (idx) => {
+    if (isDeactiving) {
+      return;
+    }
+
     const newState = [...lightsState];
     newState[idx] = {
       ...newState[idx],
       isActive: true,
     };
     setLightsState(newState);
-
-    // orders
     setOrders([...orders, idx]);
   };
 
@@ -49,17 +51,17 @@ const Lights = ({}) => {
       }, 300);
     });
 
-  // const handleReset = async (_orders) => {
-  //   if (_orders.length === 0) {
-  //     return;
-  //   }
+  const handleResetRecur = async (_orders) => {
+    if (_orders.length === 0) {
+      return;
+    }
 
-  //   const idx = _orders.pop();
-  //   await deactivateCell(idx);
-  //   handleReset(_orders);
-  // };
+    const idx = _orders.pop();
+    await deactivateCell(idx);
+    await handleResetRecur(_orders);
+  };
 
-  const reset = async (_orders) => {
+  const resetWhile = async (_orders) => {
     while (_orders.length > 0) {
       const idx = _orders.pop();
       await deactivateCell(idx);
@@ -68,12 +70,14 @@ const Lights = ({}) => {
 
   useEffect(() => {
     if (orders.length === 8) {
-      // handleReset([...orders]).then(() => {
-      //   setData(INITIAL_STATE);
-      //   setOrders([]);
-      // });
       setIsDeactivating(true);
-      reset([...orders]).then(() => {
+      // resetWhile([...orders]).then(() => {
+      //   setLightsState(INITIAL_STATE);
+      //   setOrders([]);
+      //   setIsDeactivating(false);
+      // });
+
+      handleResetRecur([...orders]).then(() => {
         setLightsState(INITIAL_STATE);
         setOrders([]);
         setIsDeactivating(false);
@@ -87,6 +91,7 @@ const Lights = ({}) => {
         debug
         {JSON.stringify(orders, null, 2)}
         <pre>{JSON.stringify(lightsState, null, 2)}</pre>
+        <div>{isDeactiving ? "deactivting" : "not deactiveing"}</div>
       </div>
       <div
         className="grid"
